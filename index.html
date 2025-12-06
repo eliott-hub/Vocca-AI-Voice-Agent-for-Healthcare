@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vocca – AI Voice Agent for Healthcare on Google Cloud</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Vocca is an AI-powered voice agent for healthcare clinics, built on Google Cloud to automate calls, appointment scheduling, and reminders."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f5f5f7;
+      --border-soft: #e2e2ea;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.08);
+      --accent-strong: #1d4ed8;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --max-width: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border-soft);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 0 0, #60a5fa, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      padding: 0.25rem 0.1rem;
+      border-radius: 999px;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    .nav-cta {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn {
+      border-radius: var(--radius-pill);
+      padding: 0.5rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-strong);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border-soft);
+      color: var(--text-muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    section {
+      padding: 3.5rem 1.5rem;
+    }
+
+    .section-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    /* HERO */
+
+    .hero {
+      padding-top: 4rem;
+      padding-bottom: 3.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.18rem 0.7rem;
+      border-radius: var(--radius-pill);
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 0.78rem;
+      font-weight: 500;
+      margin-bottom: 0.9rem;
+    }
+
+    .eyebrow span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 3vw + 1.2rem, 2.9rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin: 0 0 1rem;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-subtitle {
+      margin: 0 0 1.75rem;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      max-width: 32rem;
+    }
+
+    .hero-subtitle strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+    }
+
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+    }
+
+    .hero-meta-tag {
+      padding: 0.2rem 0.7rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-soft);
+      background: #fff;
+    }
+
+    .hero-card {
+      background: var(--bg-soft);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-soft);
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .hero-pill {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: var(--radius-pill);
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #bbf7d0;
+    }
+
+    .hero-architecture {
+      display: grid;
+      grid-template-columns: 1.1fr 1.1fr;
+      gap: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .stack-column {
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .stack-column h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .stack-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--text-main);
+    }
+
+    .stack-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      opacity: 0.85;
+    }
+
+    .gcp-badge {
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .gcp-logo {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      background: conic-gradient(
+        from 180deg,
+        #ea4335 0 90deg,
+        #fbbc05 90deg 180deg,
+        #34a853 180deg 270deg,
+        #4285f4 270deg 360deg
+      );
+    }
+
+    /* Sections */
+
+    .section-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 1.6rem;
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-intro {
+      max-width: 40rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 1.2rem 1.25rem;
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.03);
+      font-size: 0.9rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-top: 0;
+      margin-bottom: 0.35rem;
+    }
+
+    .card p {
+      margin: 0.2rem 0 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.3rem;
+    }
+
+    .pill {
+      border-radius: var(--radius-pill);
+      padding: 0.18rem 0.7rem;
+      font-size: 0.75rem;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-soft);
+      color: var(--text-muted);
+    }
+
+    /* Architecture section */
+
+    .architecture-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 1.1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .arch-diagram {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 1.2rem;
+      background: var(--bg-soft);
+      box-shadow: var(--shadow-soft);
+      font-size: 0.82rem;
+    }
+
+    .arch-diagram-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .arch-diagram-lanes {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .arch-lane-label {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .arch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .arch-chip {
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-pill);
+      background: #fff;
+      border: 1px solid var(--border-soft);
+    }
+
+    .arch-notes {
+      margin-top: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+
+    .arch-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.55rem;
+      font-size: 0.9rem;
+    }
+
+    .arch-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      color: var(--text-muted);
+    }
+
+    .arch-list li span.marker {
+      margin-top: 0.25rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      opacity: 0.9;
+    }
+
+    /* Benefits */
+
+    .benefits-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.7rem;
+      font-size: 0.92rem;
+    }
+
+    .benefits-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+    }
+
+    .benefits-list strong {
+      color: var(--text-main);
+    }
+
+    .check {
+      margin-top: 0.18rem;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1.5px solid #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #16a34a;
+      background: #f0fdf4;
+    }
+
+    /* Contact */
+
+    .contact-box {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      padding: 1.4rem 1.6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.3rem;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+
+    .contact-meta {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .contact-meta div {
+      margin-bottom: 0.25rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-soft);
+      padding: 1.3rem 1.5rem 2rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 960px) {
+      .hero-grid,
+      .architecture-layout,
+      .grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-card {
+        margin-top: 0.8rem;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        display: none;
+      }
+      .hero {
+        padding-top: 3rem;
+      }
+      .contact-box {
+        padding: 1.2rem 1rem;
+      }
+      section {
+        padding-inline: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="nav-inner">
+        <div class="logo">
+          <div class="logo-mark">V</div>
+          <span>Vocca</span>
+        </div>
+        <nav class="nav-links">
+          <a href="#about">About</a>
+          <a href="#gcp-architecture">Google Cloud Architecture</a>
+          <a href="#benefits">Benefits</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-cta">
+          <a class="btn btn-ghost" href="https://vocca.info" target="_blank"
+            >Main website</a
+          >
+          <a class="btn btn-primary" href="#contact">Talk to us</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero" id="top">
+        <div class="section-inner hero-grid">
+          <div>
+            <div class="eyebrow">
+              <span class="dot"></span>
+              AI voice agent for healthcare, powered by Google Cloud
+            </div>
+            <h1 class="hero-title">
+              Answer every patient call with an
+              <em>AI voice agent</em> built on Google Cloud.
+            </h1>
+            <p class="hero-subtitle">
+              Vocca automates phone calls, appointment scheduling, reminders and
+              common questions for clinics and medical centers. Patients talk in
+              natural language; our AI listens, responds and books—no waiting on
+              hold, no typing.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#gcp-architecture"
+                >View Google Cloud integration →</a
+              >
+            </div>
+            <div class="hero-meta">
+              <div class="hero-meta-row">
+                <div class="hero-meta-tag">
+                  Built for healthcare providers (B2B)
+                </div>
+                <div class="hero-meta-tag">24/7 AI call handling</div>
+                <div class="hero-meta-tag">Based in France</div>
+              </div>
+              <div>Solution contact: <strong>eliott@vocca.info</strong></div>
+            </div>
+          </div>
+
+          <aside class="hero-card" aria-label="Vocca on Google Cloud overview">
+            <div class="hero-card-header">
+              <div>
+                <div class="hero-card-title">Vocca on Google Cloud</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">
+                  High-level solution architecture
+                </div>
+              </div>
+              <div class="hero-pill">Healthcare voice automation</div>
+            </div>
+            <div class="hero-architecture">
+              <div class="stack-column">
+                <h4>AI & Voice Layer</h4>
+                <div class="stack-item">
+                  <span class="stack-dot"></span>
+                  <span>Dialog & intent models for patient calls</span>
+                </div>
+                <div class="stack-item">
+                  <span class="stack-dot"></span>
+                  <span>Real-time speech recognition & synthesis</span>
+                </div>
+                <div class="stack-item">
+                  <span class="stack-dot"></span>
+                  <span>Booking workflows & reminder logic</span>
+                </div>
+              </div>
+              <div class="stack-column">
+                <h4>Google Cloud Platform</h4>
+                <div class="stack-item">
+                  <span class="stack-dot"></span>
+                  <span>Google Cloud AI & Speech services</span>
+                </div>
+                <div class="stack-item">
+                  <span class="stack-dot"></span>
+                  <span>Cloud Run / GKE for scalable APIs</span>
+                </div>
+                <div class="stack-item">
+                  <span class="stack-dot"></span>
+                  <span>Cloud SQL / Firestore for appointment data</span>
+                </div>
+              </div>
+            </div>
+            <div class="gcp-badge">
+              <div class="gcp-logo"></div>
+              <span>Designed natively for Google Cloud infrastructure.</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about">
+        <div class="section-inner">
+          <div class="section-label">About the solution</div>
+          <h2 class="section-title">
+            Vocca: conversational AI voice agents for healthcare centers
+          </h2>
+          <p class="section-intro">
+            Vocca is a dedicated AI voice agent for clinics and medical centers.
+            It answers calls, handles appointment scheduling, sends reminders,
+            and notes patient requests automatically. Our proprietary
+            conversational AI speaks directly with patients on the phone,
+            answers typical questions in natural language, and records relevant
+            details to the clinic’s systems. Patients no longer wait on hold or
+            type through complex menus—the agent is always available, 24/7.
+          </p>
+
+          <div class="grid-3">
+            <article class="card">
+              <h3>For healthcare providers (B2B)</h3>
+              <p>
+                Vocca is built for clinics, medical centers, and healthcare
+                networks that want to modernize their front-desk operations.
+              </p>
+              <div class="pill-row">
+                <span class="pill">Clinics & polyclinics</span>
+                <span class="pill">Medical centers</span>
+                <span class="pill">Specialist practices</span>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Always-on patient communication</h3>
+              <p>
+                Patients can call anytime to book, reschedule, or ask common
+                questions. Vocca routes intent, confirms details, and creates
+                appointments based on clinic rules.
+              </p>
+              <div class="pill-row">
+                <span class="pill">24/7 availability</span>
+                <span class="pill">Multi-clinic support</span>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>Operational efficiency</h3>
+              <p>
+                By automating repetitive call handling, healthcare teams reduce
+                reliance on external call centers and free staff for higher-value
+                clinical tasks.
+              </p>
+              <div class="pill-row">
+                <span class="pill">Lower call costs</span>
+                <span class="pill">Less manual work</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- GCP ARCHITECTURE -->
+      <section id="gcp-architecture">
+        <div class="section-inner">
+          <div class="section-label">Google Cloud integration</div>
+          <h2 class="section-title">How Vocca runs on Google Cloud</h2>
+          <p class="section-intro">
+            The Vocca platform is designed to leverage Google Cloud’s managed
+            services for AI, speech, security, and observability. This enables
+            reliable, low-latency voice experiences for patients and a scalable,
+            compliant backend for healthcare providers.
+          </p>
+
+          <div class="architecture-layout">
+            <div class="arch-diagram">
+              <div class="arch-diagram-header">
+                <div style="font-size: 0.9rem; font-weight: 600;">
+                  High-level architecture
+                </div>
+                <div
+                  style="
+                    font-size: 0.75rem;
+                    padding: 0.18rem 0.55rem;
+                    border-radius: var(--radius-pill);
+                    background: #eef2ff;
+                    border: 1px solid #c7d2fe;
+                    color: #4f46e5;
+                  "
+                >
+                  Powered by Google Cloud
+                </div>
+              </div>
+              <div class="arch-diagram-lanes">
+                <div>
+                  <div class="arch-lane-label">Patient channel</div>
+                  <div class="arch-row">
+                    <div class="arch-chip">Phone call (PSTN / VoIP)</div>
+                    <div class="arch-chip">Clinic phone number</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="arch-lane-label">AI & application layer</div>
+                  <div class="arch-row">
+                    <div class="arch-chip">Google Cloud AI Platform</div>
+                    <div class="arch-chip">Speech-to-Text & Text-to-Speech</div>
+                    <div class="arch-chip">Dialog & intent models</div>
+                    <div class="arch-chip">Orchestration on Cloud Run / GKE</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="arch-lane-label">Data & integration layer</div>
+                  <div class="arch-row">
+                    <div class="arch-chip">Cloud SQL / Firestore</div>
+                    <div class="arch-chip">Secure appointment APIs</div>
+                    <div class="arch-chip">Cloud Logging & Monitoring</div>
+                  </div>
+                </div>
+                <div>
+                  <div class="arch-lane-label">Security & compliance</div>
+                  <div class="arch-row">
+                    <div class="arch-chip">IAM & service accounts</div>
+                    <div class="arch-chip">Encryption in transit & at rest</div>
+                    <div class="arch-chip">Regional deployment in the EU</div>
+                  </div>
+                </div>
+              </div>
+              <div class="arch-notes">
+                Patient calls are processed in real time through Google Cloud
+                AI and speech services; intents such as booking, rescheduling or
+                requesting information are routed to Vocca’s workflow engine and
+                stored in secure databases before syncing with clinic systems.
+              </div>
+            </div>
+
+            <div>
+              <ul class="arch-list">
+                <li>
+                  <span class="marker"></span>
+                  <div>
+                    <strong>Real-time voice understanding.</strong> Vocca uses
+                    Google Cloud speech technologies to convert patient speech
+                    into text and back into natural voice responses with low
+                    latency, even during complex multi-turn conversations.
+                  </div>
+                </li>
+                <li>
+                  <span class="marker"></span>
+                  <div>
+                    <strong>Intent-driven workflows.</strong> AI models
+                    determine what the caller wants—book an appointment, change
+                    a time, ask about opening hours or preparation—and trigger
+                    the correct workflow, including reminders and notes.
+                  </div>
+                </li>
+                <li>
+                  <span class="marker"></span>
+                  <div>
+                    <strong>Secure data handling.</strong> Appointment and call
+                    metadata are stored in managed databases on Google Cloud
+                    with strict access control, encryption, and regional data
+                    residency aligned with European privacy expectations.
+                  </div>
+                </li>
+                <li>
+                  <span class="marker"></span>
+                  <div>
+                    <strong>Easy integration with clinic systems.</strong>
+                    Vocca exposes RESTful APIs and webhooks that connect to
+                    electronic scheduling or practice-management solutions,
+                    keeping staff calendars and reminders in sync.
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BENEFITS -->
+      <section id="benefits">
+        <div class="section-inner">
+          <div class="section-label">Customer value</div>
+          <h2 class="section-title">Benefits for clinics and medical centers</h2>
+          <p class="section-intro">
+            Vocca focuses on a single goal: making it effortless for patients to
+            reach their clinic while reducing the cost and complexity of
+            managing phones and call centers.
+          </p>
+
+          <div class="grid-3">
+            <div class="card">
+              <h3>Patient experience</h3>
+              <ul class="benefits-list">
+                <li>
+                  <div class="check">✓</div>
+                  <div>
+                    <strong>No more waiting on hold.</strong> Patients can speak
+                    to an AI agent immediately, at any time of day.
+                  </div>
+                </li>
+                <li>
+                  <div class="check">✓</div>
+                  <div>
+                    <strong>Natural conversations.</strong> The agent speaks
+                    naturally, answers common questions, and confirms details
+                    clearly.
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Clinic operations</h3>
+              <ul class="benefits-list">
+                <li>
+                  <div class="check">✓</div>
+                  <div>
+                    <strong>Reduced call volume for staff.</strong> Front-desk
+                    teams focus on in-person care instead of repetitive phone
+                    tasks.
+                  </div>
+                </li>
+                <li>
+                  <div class="check">✓</div>
+                  <div>
+                    <strong>Lower external service spend.</strong> Clinics can
+                    rely less on outsourced call centers and after-hours
+                    services.
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Technology & compliance</h3>
+              <ul class="benefits-list">
+                <li>
+                  <div class="check">✓</div>
+                  <div>
+                    <strong>Built on Google Cloud.</strong> Uses managed AI,
+                    security and monitoring services for reliability.
+                  </div>
+                </li>
+                <li>
+                  <div class="check">✓</div>
+                  <div>
+                    <strong>Privacy by design.</strong> Data is protected with
+                    encryption and strict access control, supporting healthcare
+                    privacy requirements.
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact">
+        <div class="section-inner">
+          <div class="section-label">Contact</div>
+          <h2 class="section-title">Get in touch with Vocca</h2>
+          <p class="section-intro">
+            Vocca is based in France and focuses on AI voice automation for
+            healthcare organizations. For solution qualification, pilots, or
+            Google Cloud collaborations, reach out using the details below.
+          </p>
+
+          <div class="contact-box">
+            <div class="contact-meta">
+              <div><strong>Company:</strong> Vocca</div>
+              <div><strong>Website:</strong> <a href="https://vocca.info" target="_blank">https://vocca.info</a></div>
+              <div><strong>Email:</strong> <a href="mailto:eliott@vocca.info">eliott@vocca.info</a></div>
+              <div><strong>Location:</strong> France</div>
+            </div>
+            <div>
+              <a class="btn btn-primary" href="mailto:eliott@vocca.info"
+                >Contact Vocca about this Google Cloud solution</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <div>© <span id="year"></span> Vocca. All rights reserved.</div>
+        <div>AI voice agents for healthcare clinics, built on Google Cloud.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // simple year update
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
